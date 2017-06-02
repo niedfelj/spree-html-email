@@ -1,17 +1,27 @@
-<p class="customer">
-  <%= t(:dear_customer, :default => "Dear %{name},", :name => @order.bill_address ? @order.bill_address.full_name : 'Customer' ) %>
-</p>
-<p class="overview">
-  Your order has been <b>CANCELED</b>.  Please retain this cancellation information for your records.
-</p>
-<p class="link">
-  To view the complete details of your order use the following link:
-  <%= link_to(order_url(@order, :host => Spree::Config[:site_url]), order_url(@order, :host => Spree::Config[:site_url])) %>
-</p>
-<h1>
-  Order Summary [CANCELED]
-</h1>
-<%= render :partial => 'spree/shared/email/order_details', :locals => {:order => @order} %>
-<p class="thank-you">
-  Thank you for your business
-</p>
+<table class="row header">
+    <tr>
+        <td>
+            <h1><%= raw Spree.t('order_mailer.cancel_email.order_summary_canceled', number: "<span class='link'>#{@order.number}</span>") %></h1>
+            <p class="text-descr">
+                <%= Spree.t('order_mailer.cancel_email.dear_customer') %> <%= Spree.t('order_mailer.cancel_email.instructions') %>
+            </p>
+            <table class="container uppercase text-left">
+                <tr>
+                    <td class="wrapper last">
+                        <table class="twelve columns">
+                            <tr><td colspan="4"><div class="hr"></div></td></tr>
+                            <%= render collection: @order.line_items, partial: 'spree/shared/mailer_line_item', as: :line_item %>
+                            <tr><td colspan="4"><div class="hr"></div></td></tr>
+                            <%= render 'spree/order_mailer/subtotal', order: @order %>
+                            <% @order.adjustments.eligible.each do |adjustment| %>
+                                <%= render 'spree/order_mailer/adjustment', adjustment: adjustment %>
+                            <% end %>
+                            <%= render 'spree/order_mailer/total', order: @order %>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="expander"></td>
+    </tr>
+</table>

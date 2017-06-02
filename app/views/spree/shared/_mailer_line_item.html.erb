@@ -1,0 +1,24 @@
+<tr class="no_uppercase">
+    <td>
+        <% if line_item.variant.images.length != 0 %>
+          <%= image_tag "#{root_url}#{line_item.variant.images.first.attachment.url(:mini)}", :itemprop => "image" %>
+        <% elsif line_item.variant.product.images.length != 0%>
+          <%= image_tag "#{root_url}#{line_item.variant.product.images.first.attachment.url(:mini)}", :itemprop => "image" %>
+        <% else %>
+          <%= image_tag "#{root_url}/assets/noimage/mini.png", :itemprop => "image" %>
+        <% end %>
+    </td>
+    <td class="six sub-columns">
+        <%= link_to raw(line_item.variant.product.name), spree.product_url(line_item.variant.product), class: 'text-style' %>
+        <%= raw(line_item.variant.options_text) -%>
+        <% if line_item.variant.sku != '' %>
+          (<%= line_item.variant.sku %>)
+        <% end %>
+    </td>
+    <td class="six sub-columns last right">
+        <%= line_item.quantity %> x <%= line_item.single_money %>
+    </td>
+    <td>
+        <%= line_item.display_amount %>
+    </td>
+</tr>

@@ -1,16 +1,44 @@
-<p class="customer">
-  <%= t(:dear_customer, :default => "Dear %{name},", :name => @shipment.order.bill_address ? @shipment.order.bill_address.full_name : 'Customer' ) %>
-</p>
-<p class="overview">
-  Your shipment has been shipped
-</p>
-<p class="link">
-  To view the complete details of your order use the following link:
-  <%= link_to(order_url(@shipment.order, :host => Spree::Config[:site_url]), order_url(@shipment.order, :host => Spree::Config[:site_url])) %>
-</p>
-<%= render :partial => 'spree/shared/email/shipment_details', :locals => {:shipment => @shipment} %>
-<%= render :partial => 'spree/shared/email/shipment_tracking', :locals => { :shipment => @shipment} %>
-<%= render :partial => 'spree/shared/email/digitals', :locals => { :order => @shipment.order } %>
-<p class="thank-you">
-  Thank you for your business.
-</p>
+<table class="row header">
+    <tr>
+        <td>
+            <h1><%= Spree.t('shipment_mailer.shipped_email.order_header') %></h1>
+            <p class="text-descr">
+            
+            <% address = Spree::Address.find_by_id(@shipment.order.bill_address_id) %>
+            <% if address %>
+                  Dear <%= address.firstname %>, <%= raw Spree.t('shipment_mailer.shipped_email.instructions', number: "<strong class='pink'>#{@shipment.order.number}</strong>", method: @shipment.shipping_method.name) %>
+            <% else %>
+                  <%= Spree.t('shipment_mailer.shipped_email.dear_customer') %>, <%= raw Spree.t('shipment_mailer.shipped_email.instructions', number: "<strong class='pink'>#{@shipment.order.number}</strong>", method: @shipment.shipping_method.name) %>
+            <% end %>
+            </p>
+            <table class="container uppercase text-left">
+                <tr>
+                    <td class="wrapper last">
+                        <table class="twelve columns">
+                            <tr>
+                                <td colspan="4">
+                                    <div class="hr"></div>
+                                </td>
+                            </tr>
+                            <%= render collection: @shipment.manifest.map(&:line_item), partial: 'spree/shared/mailer_line_item', as: :line_item %>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="hr"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <% if @shipment.tracking %>
+                <h2 class="uppercase text-center"><%= Spree.t('shipment_mailer.shipped_email.track_information', tracking: @shipment.tracking) %></h2>
+            <% end %>
+            <% if @shipment.tracking_url %>
+                <p>
+                    <%= Spree.t('shipment_mailer.shipped_email.track_link', url: link_to(@shipment.tracking_url, @shipment.tracking_url)).html_safe %>
+                </p>
+            <% end %>
+        </td>
+        <td class="expander"></td>
+    </tr>
+</table>

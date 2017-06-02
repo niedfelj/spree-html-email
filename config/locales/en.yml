@@ -1,5 +1,13 @@
 en:
-  digital_email_description: <p>Each link will only work a SINGLE TIME! Also, they will only work WITHIN 24 HOURS!</p>
-  tracking_information: Tracking Information
-  shipment_details: Shipment Details
-  digital_item_email_title: "<b>%{name}, %{type}:</b><br/>"
+  spree:
+    order_mailer:
+      cancel_email:
+        order_summary_canceled: 'Order %{number} CANCELED'
+        instructions: 'your order has been cancelled. Please retain this cancellation information for your records'
+      confirm_email:
+        order_summary: 'Order Summary %{number}'
+    shipment_mailer:
+      shipped_email:
+        order_header: 'Shipment Summary'
+        dear_customer: 'Dear Customer'
+        instructions: 'your order %{number} has been shipped. <br>Shipping method: %{method}'
